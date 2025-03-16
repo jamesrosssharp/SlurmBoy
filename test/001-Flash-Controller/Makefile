@@ -17,3 +17,7 @@ TOPLEVEL = tb
 MODULE = test
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
+
+.PHONY: view
+view:	tb.vcd config.gtkw 
+	gtkwave tb.vcd config.gtkw

@@ -111,7 +111,8 @@ reg [31:0] cmd;
 always @(posedge CLK)
 begin
     if (RSTb == 1'b0) begin
-
+        reg_axi_awready <= 1'b0;
+        reg_axi_wready <= 1'b0;
 
     end else begin
         reg_axi_awready <= 1'b0;
@@ -121,15 +122,21 @@ begin
             
             if (reg_axi_wvalid == 1'b1) begin /* And if we have a simultaneous write request */
                 reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
-                case (reg_axi_awaddr[1:0])
-                    2'b00:  /* write command register */
-                        cmd <= reg_axi_wdata;   
-                    default:;    
-                endcase    
+                
+                if (reg_axi_wvalid && reg_axi_wready) begin
+                    case (reg_axi_awaddr[1:0])
+                        2'b00:  /* write command register */
+                            cmd <= reg_axi_wdata;   
+                        default:;    
+                    endcase    
+                    reg_axi_wready <= 1'b0; /* Assert ready on next cycle */
+                end
             end
 
-            reg_sel <= reg_axi_awaddr[1:0]; /* Store address */
-            reg_axi_awready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
+            if (reg_axi_awvalid && reg_axi_awready)
+                reg_sel <= reg_axi_awaddr[1:0]; /* Store address */
+            else
+                reg_axi_awready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
 
         end else begin  /* No address write - but do we have a data write? */
 

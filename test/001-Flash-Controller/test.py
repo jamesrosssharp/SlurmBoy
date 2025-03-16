@@ -37,3 +37,25 @@ async def test_project(dut):
 
     await ClockCycles(dut.CLK, 2)
 
+    dut.reg_axi_awvalid.value = 0
+    dut.reg_axi_awaddr.value = 0x000000000
+    dut.reg_axi_wvalid.value = 0
+    dut.reg_axi_wdata.value = 0
+
+    await ClockCycles(dut.CLK, 10)
+
+    dut.reg_axi_awvalid.value = 1
+    dut.reg_axi_awaddr.value = 0x000000000
+    dut.reg_axi_wvalid.value = 1
+    dut.reg_axi_wdata.value = 0x12345678
+
+    await ClockCycles(dut.CLK, 4)
+
+    dut.reg_axi_awvalid.value = 0
+    dut.reg_axi_awaddr.value = 0x000000000
+    dut.reg_axi_wvalid.value = 0
+    dut.reg_axi_wdata.value = 0
+
+    await ClockCycles(dut.CLK, 10)
+
+
