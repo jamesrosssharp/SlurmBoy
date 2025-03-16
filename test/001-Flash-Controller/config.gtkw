@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Mar 16 06:10:01 2025
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/001-Flash-Controller/tb.vcd"
+[dumpfile_mtime] "Sun Mar 16 06:08:02 2025"
+[dumpfile_size] 3568
+[savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/001-Flash-Controller/config.gtkw"
+[timestart] 0
+[size] 1920 1054
+[pos] 1919 -55
+*-16.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 223
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 310
+@22
+tb.f0.cmd[31:0]
+@28
+tb.f0.CLK
+tb.f0.RSTb
+tb.f0.reg_axi_wready
+tb.f0.reg_axi_wvalid
+@22
+tb.f0.reg_axi_awaddr[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
