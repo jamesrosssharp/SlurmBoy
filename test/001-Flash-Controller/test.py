@@ -47,7 +47,29 @@ class AXIDevice:
 
         await ClockCycles(self.clk, 1)
    
+    async def staggered_write(self, address, value, strb):
+        self.awvalid.value = 1
+        self.awaddr.value  = address
 
+        await ClockCycles(self.clk, 2)
+
+        self.awvalid.value = 0
+        self.awaddr.value  = 0
+        self.wvalid.value  = 1
+        self.wdata.value   = value
+        self.wstrb.value   = strb
+
+        while not self.wready.value:
+            await ClockCycles(self.clk, 1)
+
+        self.awvalid.value = 0
+        self.awaddr.value  = 0
+        self.wvalid.value  = 0
+        self.wdata.value   = 0
+        self.wstrb.value   = 0
+
+        await ClockCycles(self.clk, 1)
+ 
 
 
 
@@ -80,6 +102,11 @@ async def test_project(dut):
 
     await slv.write(0, 0x87654321, 0xf)
     assert dut.f0.cmd == 0x87654321
+
+    await ClockCycles(dut.CLK, 10)
+
+    await slv.staggered_write(0x1, 0x11223344, 0xf)
+    assert dut.f0.data == 0x11223344
 
     await ClockCycles(dut.CLK, 10)
 

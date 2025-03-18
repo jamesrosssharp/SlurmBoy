@@ -105,8 +105,26 @@ module flash_controller (
 
 reg [1:0]  reg_sel;
 reg [31:0] cmd;
+reg [31:0] data;
 
 /* AXI Reg writes */
+
+task reg_write;
+    input [1:0] reg_addr;
+    begin
+        if (reg_axi_wvalid && reg_axi_wready) begin
+            case (reg_addr)
+                2'b00:  /* write command register */
+                    cmd <= reg_axi_wdata;   
+                2'b01:  /* write data register */
+                    data <= reg_axi_wdata;
+                default:;    
+            endcase    
+            reg_axi_wready <= 1'b0; /* Assert ready on next cycle */
+        end
+    end        
+endtask
+
 
 always @(posedge CLK)
 begin
@@ -122,15 +140,8 @@ begin
             
             if (reg_axi_wvalid == 1'b1) begin /* And if we have a simultaneous write request */
                 reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
-                
-                if (reg_axi_wvalid && reg_axi_wready) begin
-                    case (reg_axi_awaddr[1:0])
-                        2'b00:  /* write command register */
-                            cmd <= reg_axi_wdata;   
-                        default:;    
-                    endcase    
-                    reg_axi_wready <= 1'b0; /* Assert ready on next cycle */
-                end
+            
+                reg_write(reg_axi_awaddr[1:0]);    
             end
 
             if (reg_axi_awvalid && reg_axi_awready)
@@ -142,13 +153,9 @@ begin
 
            if (reg_axi_wvalid == 1'b1) begin /* we have a write request */
                 reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
-                case (reg_sel)
-                    2'b00:  /* write command register */
-                        cmd <= reg_axi_wdata;   
-                    default:;    
-                endcase    
-            end
-
+                
+                reg_write(reg_sel);    
+           end
         end
 
     end    
