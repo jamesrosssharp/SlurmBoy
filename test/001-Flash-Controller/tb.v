@@ -54,9 +54,9 @@ module tb ();
 	reg  [31:0] reg_axi_araddr;
 	reg  [ 2:0] reg_axi_arprot;
 
-	wire        reg_axi_rvalid;
-	reg         reg_axi_rready;
-	reg  [31:0] reg_axi_rdata;
+	reg        reg_axi_rvalid;
+	wire         reg_axi_rready;
+	wire  [31:0] reg_axi_rdata;
 
 
 	flash_controller f0 (

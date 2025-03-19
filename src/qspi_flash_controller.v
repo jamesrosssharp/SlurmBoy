@@ -97,13 +97,14 @@ module flash_controller (
 	input  [31:0] reg_axi_araddr,
 	input  [ 2:0] reg_axi_arprot,
 
-	output reg    reg_axi_rvalid,
-	input         reg_axi_rready,
-	input  [31:0] reg_axi_rdata
+	input         reg_axi_rvalid,
+	output reg    reg_axi_rready,
+	output reg [31:0] reg_axi_rdata
 
 );
 
 reg [1:0]  reg_sel;
+reg [1:0]  rd_reg_sel;
 reg [31:0] cmd;
 reg [31:0] data;
 
@@ -155,6 +156,55 @@ begin
                 reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
                 
                 reg_write(reg_sel);    
+           end
+        end
+
+    end    
+end
+
+/* AXI Reg reads */
+
+task reg_read;
+    input [1:0] reg_addr;
+    begin
+        case (reg_addr)
+            2'b00:  /* write command register */
+                reg_axi_rdata <= cmd;   
+            2'b01:  /* write data register */
+                reg_axi_rdata <= data;
+            default:;    
+        endcase    
+        reg_axi_rready <= 1'b1; /* Assert ready on next cycle */
+    end        
+endtask
+
+
+always @(posedge CLK)
+begin
+    if (RSTb == 1'b0) begin
+        reg_axi_arready <= 1'b0;
+        reg_axi_rready <= 1'b0;
+        reg_axi_rdata <= 32'h00000000;
+
+    end else begin
+        reg_axi_arready <= 1'b0;
+        reg_axi_rready <= 1'b0;
+
+        if (reg_axi_arvalid == 1'b1) begin  /* If we have a read from register address */
+            
+            if (reg_axi_rvalid == 1'b1 && reg_axi_rready == 1'b0) begin /* And if we have a simultaneous read request */
+                reg_read(reg_axi_araddr[1:0]);    
+            end
+
+            if (reg_axi_arvalid && reg_axi_arready)
+                rd_reg_sel <= reg_axi_araddr[1:0]; /* Store address */
+            else
+                reg_axi_arready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
+
+        end else begin  /* No address write - but do we have a data write? */
+
+           if (reg_axi_rvalid == 1'b1 && reg_axi_rready == 1'b0) begin /* we have a read request */
+                reg_read(rd_reg_sel);    
            end
         end
 

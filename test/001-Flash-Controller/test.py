@@ -16,7 +16,7 @@ class AXIDevice:
     '''
 
 
-    def __init__(self, clk, _awvalid, _awready, _awaddr, _wvalid, _wready, _wdata, _wstrb):
+    def __init__(self, clk, _awvalid, _awready, _awaddr, _wvalid, _wready, _wdata, _wstrb, _arvalid, _arready, _araddr, _rvalid, _rready, _rdata):
 
         self.awvalid = _awvalid
         self.awready = _awready
@@ -26,7 +26,21 @@ class AXIDevice:
         self.wdata   = _wdata
         self.wstrb   = _wstrb
 
+        self.arvalid = _arvalid
+        self.arready = _arready
+        self.araddr  = _araddr
+        self.rvalid  = _rvalid
+        self.rready  = _rready
+        self.rdata   = _rdata
+        
+
         self.clk = clk
+
+        self.awvalid.value = 0
+        self.arvalid.value = 0
+        self.wvalid.value = 0
+        self.rvalid.value = 0
+
 
 
     async def write(self, address, value, strb):
@@ -70,7 +84,23 @@ class AXIDevice:
 
         await ClockCycles(self.clk, 1)
  
+    async def read(self, address):
+        self.arvalid.value = 1
+        self.araddr.value  = address
+        self.rvalid.value  = 1
 
+        while not self.rready.value:
+            await ClockCycles(self.clk, 1)
+
+        val = self.rdata.value 
+
+        self.arvalid.value = 0
+        self.araddr.value  = 0
+        self.rvalid.value  = 0 
+
+        await ClockCycles(self.clk, 1)
+ 
+        return val
 
 
 @cocotb.test()
@@ -93,7 +123,8 @@ async def test_project(dut):
 
     dut._log.info("Test project behavior")
 
-    slv = AXIDevice(dut.CLK, dut.reg_axi_awvalid, dut.reg_axi_awready, dut.reg_axi_awaddr, dut.reg_axi_wvalid, dut.reg_axi_wready, dut.reg_axi_wdata, dut.reg_axi_wstrb)
+    slv = AXIDevice(dut.CLK, dut.reg_axi_awvalid, dut.reg_axi_awready, dut.reg_axi_awaddr, dut.reg_axi_wvalid, dut.reg_axi_wready, dut.reg_axi_wdata, dut.reg_axi_wstrb,
+                             dut.reg_axi_arvalid, dut.reg_axi_arready, dut.reg_axi_araddr, dut.reg_axi_rvalid, dut.reg_axi_rready, dut.reg_axi_rdata)
 
     await slv.write(0, 0x12345678, 0xf)
     assert dut.f0.cmd == 0x12345678
@@ -110,4 +141,8 @@ async def test_project(dut):
 
     await ClockCycles(dut.CLK, 10)
 
+    dat = await slv.read(0x1)
 
+    assert dat == 0x11223344
+    
+    await ClockCycles(dut.CLK, 10)
