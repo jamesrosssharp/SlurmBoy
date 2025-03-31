@@ -36,9 +36,9 @@ module boot_rom
     input RSTb,
 
     /* 1 kiB x 32 bit ROM */
-    input addr[ADDRESS_BITS - 1:0],
-    output data[BITS - 1:0]
-    output reg data_valid;
+    input [ADDRESS_BITS - 1:0] addr,
+    output [BITS - 1:0] data,
+    output reg data_valid
 );
 
 reg [BITS - 1:0] MEM [(1 << ADDRESS_BITS) - 1:0];
@@ -59,7 +59,6 @@ always @(posedge CLK)
 begin
     if (RSTb == 1'b0) begin
         prev_addr <= {ADDRESS_BITS{1'b0}};
-        data_valid <= 1'b0;
     end else begin
         prev_addr <= addr;
 	    dout <= MEM[addr];

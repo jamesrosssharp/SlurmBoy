@@ -90,9 +90,10 @@ task reg_read;
                 mem_rdata <= rom_data;   
                 mem_rready <= rom_valid;
             end    
-            4'b0001:  /* read cacheable memory - SRAM */
+            4'b0001,  /* read cacheable memory - SRAM */
             4'b0010:  /* QSPI flash                   */
-            default:;    
+                        ;
+            default:    ;    
         endcase    
     end        
 endtask
@@ -111,23 +112,28 @@ begin
 
         if (mem_axi_arvalid == 1'b1) begin  /* If we have a read from register address */
             
-            if (mem_axi_rvalid == 1'b1 && mem_axi_rready == 1'b0) begin /* And if we have a simultaneous read request */
-                reg_read(mem_axi_araddr);    
+            if (mem_axi_rvalid == 1'b1) begin /* And if we have a simultaneous read request */
+                reg_read(mem_axi_araddr); 
             end
 
             if (mem_axi_arvalid && mem_axi_arready)
-                rd_addr <= reg_axi_araddr; /* Store address */
+                rd_addr <= mem_axi_araddr; /* Store address */
             else
-                reg_axi_arready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
+                mem_axi_arready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
 
         end else begin  /* No address write - but do we have a data write? */
 
-           if (mem_axi_rvalid == 1'b1 && mem_rready == 1'b0) begin /* we have a read request */
+           if (mem_axi_rvalid == 1'b1) begin /* we have a read request */
                 reg_read(rd_addr);    
            end
         end
 
+        if (mem_axi_rvalid == 1'b1) begin /* we have a read request */
+            reg_read(rd_addr);    
+        end
+      
     end 
 
 end    
 
+endmodule
