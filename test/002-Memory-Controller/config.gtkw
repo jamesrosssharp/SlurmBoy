@@ -1,26 +1,39 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Mar 31 04:47:17 2025
+[*] Mon Mar 31 06:35:27 2025
 [*]
 [dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/002-Memory-Controller/tb.vcd"
-[dumpfile_mtime] "Mon Mar 31 04:47:06 2025"
-[dumpfile_size] 776678
+[dumpfile_mtime] "Mon Mar 31 06:33:29 2025"
+[dumpfile_size] 3246
 [savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/002-Memory-Controller/config.gtkw"
-[timestart] 63160000
+[timestart] 0
 [size] 1920 996
 [pos] -1 -1
-*-24.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.m0.
 [sst_width] 223
-[signals_width] 142
+[signals_width] 190
 [sst_expanded] 1
 [sst_vpaned_height] 290
 @28
 tb.m0.rom_valid
 tb.m0.mem_axi_rvalid
 tb.m0.mem_axi_rready
-@29
 tb.m0.rom0.data_valid
+@22
+tb.m0.mem_axi_araddr[31:0]
+@28
+tb.m0.mem_axi_arvalid
+tb.m0.mem_axi_arready
+@22
+tb.m0.mem_axi_rdata[31:0]
+tb.m0.rom0.addr[9:0]
+tb.m0.rom0.dout[31:0]
+tb.m0.mem_axi_rdata[31:0]
+@28
+tb.m0.rom_valid
+@23
+tb.m0.state_r[3:0]
 [pattern_trace] 1
 [pattern_trace] 0

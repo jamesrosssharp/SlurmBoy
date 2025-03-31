@@ -38,7 +38,7 @@ module boot_rom
     /* 1 kiB x 32 bit ROM */
     input [ADDRESS_BITS - 1:0] addr,
     output [BITS - 1:0] data,
-    output reg data_valid
+    output data_valid
 );
 
 reg [BITS - 1:0] MEM [(1 << ADDRESS_BITS) - 1:0];

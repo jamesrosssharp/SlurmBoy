@@ -54,8 +54,8 @@ module memory_controller (
 	input  [ 2:0] mem_axi_arprot,
 
 	input          mem_axi_rvalid,
-	output         mem_axi_rready,
-	output  [31:0] mem_axi_rdata
+	output reg        mem_axi_rready,
+	output reg [31:0] mem_axi_rdata
 
 );
 
@@ -75,65 +75,60 @@ boot_rom rom0
 
 /* Process memory reads */
 
+localparam state_r_idle                = 4'd0;
+localparam state_r_latch_address       = 4'd1;
+localparam state_r_wait_data_valid     = 4'd2;
+localparam state_r_ready               = 4'd3;
+localparam state_r_done                = 4'd4;
 
-reg [31:0] mem_rdata;
-reg mem_rready;
-
-assign mem_axi_rdata = mem_rdata;
-assign mem_axi_rready = mem_rready;
-
-task reg_read;
-    input [1:0] reg_addr;
-    begin
-        case (reg_addr[31:28])
-            4'b0000: begin /* read ROM space */
-                mem_rdata <= rom_data;   
-                mem_rready <= rom_valid;
-            end    
-            4'b0001,  /* read cacheable memory - SRAM */
-            4'b0010:  /* QSPI flash                   */
-                        ;
-            default:    ;    
-        endcase    
-    end        
-endtask
+reg [3:0] state_r;
 
 always @(posedge CLK)
 begin
-
     if (RSTb == 1'b0) begin
+        state_r           <= state_r_idle;
         mem_axi_arready <= 1'b0;
-        mem_rready <= 1'b0;
-        mem_rdata <= 32'h00000000;
-
     end else begin
         mem_axi_arready <= 1'b0;
-        mem_rready <= 1'b0;
+        mem_axi_rready  <= 1'b0;
 
-        if (mem_axi_arvalid == 1'b1) begin  /* If we have a read from register address */
-            
-            if (mem_axi_rvalid == 1'b1) begin /* And if we have a simultaneous read request */
-                reg_read(mem_axi_araddr); 
+        case (state_r)
+            state_r_idle: begin
+                if (mem_axi_arvalid == 1'b1) begin
+                    state_r <= state_r_latch_address;
+                    mem_axi_arready <= 1'b1;
+                end
             end
+            state_r_latch_address: begin
+                rd_addr <= mem_axi_araddr;       
+                state_r <= state_r_wait_data_valid;
+            end
+            state_r_wait_data_valid: begin
+                case (rd_addr[31:28])
+                    4'd0: begin
+                        if (rom_valid == 1'b1) begin
+                            mem_axi_rdata <= rom_data;
+                            state_r <= state_r_ready;
+                        end
+                    end
+                    default: begin
+                        mem_axi_rdata <= 32'hdeadbeef;
+                        state_r <= state_r_ready;
+                    end    
+                endcase
+            end
+            state_r_ready: begin
+                mem_axi_rready <= 1'b1;
+                state_r <= state_r_done;
+            end
+            state_r_done: begin
+                if (mem_axi_rvalid == 1'b0)
+                    state_r <= state_r_idle;
+            end
+        endcase
+    end
 
-            if (mem_axi_arvalid && mem_axi_arready)
-                rd_addr <= mem_axi_araddr; /* Store address */
-            else
-                mem_axi_arready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
+end
 
-        end else begin  /* No address write - but do we have a data write? */
-
-           if (mem_axi_rvalid == 1'b1) begin /* we have a read request */
-                reg_read(rd_addr);    
-           end
-        end
-
-        if (mem_axi_rvalid == 1'b1) begin /* we have a read request */
-            reg_read(rd_addr);    
-        end
-      
-    end 
-
-end    
 
 endmodule
