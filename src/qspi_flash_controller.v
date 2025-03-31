@@ -73,9 +73,9 @@ module flash_controller (
 	input  [31:0] mem_axi_araddr,
 	input  [ 2:0] mem_axi_arprot,
 
-	output        mem_axi_rvalid,
-	input         mem_axi_rready,
-	input  [31:0] mem_axi_rdata,
+	input         mem_axi_rvalid,
+	output        mem_axi_rready,
+	output  [31:0] mem_axi_rdata,
 
     /* AXI4 Lite peripheral interface (for device registers) */
 
@@ -168,9 +168,9 @@ task reg_read;
     input [1:0] reg_addr;
     begin
         case (reg_addr)
-            2'b00:  /* write command register */
+            2'b00:  /* read command register */
                 reg_axi_rdata <= cmd;   
-            2'b01:  /* write data register */
+            2'b01:  /* read data register */
                 reg_axi_rdata <= data;
             default:;    
         endcase    

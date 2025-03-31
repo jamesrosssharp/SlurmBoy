@@ -7,3 +7,13 @@ Then swap out PicoRV32 for either a custom RISC-V core with configurable datapat
 
 We will use AXI4 Lite interconnect for our memory interface and memory mapped peripherals.
 
+Development plan
+================
+
+- Develop boot ROM (block RAM)
+- Develop external memory cache
+- Develop flash interface
+- Develop memory arbiter
+- Interface to CPU, boot some code
+- Develop PSRAM interface
+- Develop GPU
