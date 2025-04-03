@@ -1,0 +1,40 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Thu Apr  3 07:28:51 2025
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/tb.vcd"
+[dumpfile_mtime] "Thu Apr  3 07:25:46 2025"
+[dumpfile_size] 19645
+[savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/config.gtkw"
+[timestart] 0
+[size] 1920 996
+[pos] -1 -1
+*-19.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.s0.
+[treeopen] tb.s0.cpu0.
+[sst_width] 376
+[signals_width] 198
+[sst_expanded] 1
+[sst_vpaned_height] 290
+@22
+tb.s0.mem0.mem_axi_araddr[31:0]
+@28
+tb.s0.mem0.mem_axi_arready
+tb.s0.mem0.mem_axi_arvalid
+@22
+tb.s0.mem0.mem_axi_rdata[31:0]
+@28
+tb.s0.mem0.mem_axi_rready
+tb.s0.mem0.mem_axi_rvalid
+@22
+tb.s0.cpu0.picorv32_core.dbg_ascii_instr[63:0]
+tb.s0.cpu0.picorv32_core.cpu_state[7:0]
+tb.s0.cpu0.picorv32_core.dbg_insn_opcode[31:0]
+@28
+tb.s0.cpu0.picorv32_core.dbg_mem_instr
+tb.s0.cpu0.picorv32_core.dbg_valid_insn
+@29
+tb.s0.cpu0.picorv32_core.instr_lui
+[pattern_trace] 1
+[pattern_trace] 0

@@ -53,8 +53,8 @@ module memory_controller (
 	input  [31:0] mem_axi_araddr,
 	input  [ 2:0] mem_axi_arprot,
 
-	input             mem_axi_rvalid,
-	output reg        mem_axi_rready,
+	output reg        mem_axi_rvalid,
+	input             mem_axi_rready,
 	output reg [31:0] mem_axi_rdata
 
 );
@@ -107,7 +107,7 @@ begin
         mem_axi_arready <= 1'b0;
     end else begin
         mem_axi_arready <= 1'b0;
-        mem_axi_rready  <= 1'b0;
+        mem_axi_rvalid  <= 1'b0;
 
         case (state_r)
             state_r_idle: begin
@@ -121,7 +121,7 @@ begin
                 state_r <= state_r_wait_data_valid;
             end
             state_r_wait_data_valid: begin
-                if (mem_axi_rvalid == 1'b1) begin
+                if (mem_axi_rready == 1'b1) begin
                     case (rd_addr[31:28])
                         4'd0: begin /* ROM */
                             if (rom_valid == 1'b1) begin
@@ -143,7 +143,7 @@ begin
                 end
             end
             state_r_ready: begin
-                mem_axi_rready <= 1'b1;
+                mem_axi_rvalid <= 1'b1;
                 state_r <= state_r_done;
             end
             state_r_done: begin
