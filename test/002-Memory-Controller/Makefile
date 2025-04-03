@@ -6,7 +6,8 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../../src
 PROJECT_SOURCES = memory_controller.v	\
-				  boot_rom.v
+				  boot_rom.v			\
+				  scratchpad_ram.v
 
 SIM_BUILD				= sim_build/rtl
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))

@@ -45,3 +45,14 @@ async def test_project(dut):
         assert dat == 0x11223344 + (i%32)
     
     await ClockCycles(dut.CLK, 10)
+
+    await slv.write(0x10000000, 0x76543210, 0xf)
+
+    await ClockCycles(dut.CLK, 10)
+
+    dat = await slv.read(0x10000000)
+
+    assert dat == 0x76543210
+    
+
+
