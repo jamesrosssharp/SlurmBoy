@@ -44,7 +44,8 @@ module scratchpad_ram
     input  [ADDRESS_BITS - 1:0] wr_addr,
     input  [BITS - 1:0]         data_in,
     output reg [BITS - 1:0]     data_out,
-    input                       WRb
+    input                       WRb,
+    input  [3:0]                wstrb                     
 );
 
 reg [BITS - 1:0] MEM [(1 << ADDRESS_BITS) - 1:0];
@@ -52,7 +53,16 @@ reg [BITS - 1:0] MEM [(1 << ADDRESS_BITS) - 1:0];
 always @(posedge CLK)
 begin
     if (WRb == 1'b0)
-        MEM[wr_addr] <= data_in;
+    begin
+        if (wstrb[0])    
+            MEM[wr_addr][7:0] <= data_in[7:0];
+        if (wstrb[1])    
+            MEM[wr_addr][15:8] <= data_in[15:8];
+        if (wstrb[2])    
+            MEM[wr_addr][23:16] <= data_in[23:16];
+        if (wstrb[3])    
+            MEM[wr_addr][31:24] <= data_in[31:24];
+    end
     data_out <= MEM[rd_addr];
 
 end

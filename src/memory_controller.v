@@ -99,7 +99,8 @@ scratchpad_ram ram0
     wr_addr[11:2],
     mem_axi_wdata,
     scratchpad_data_out,
-    scratchpad_write_b
+    scratchpad_write_b,
+    mem_axi_wstrb
 );
 
 uart 

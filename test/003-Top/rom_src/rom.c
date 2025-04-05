@@ -36,13 +36,63 @@ SOFTWARE.
 
 #define UART_REG 0x20000000
 
-void putc(char c)
+#include <stdarg.h>
+
+void my_putc(char c)
 {
     char* uart = (char*)UART_REG;
     *uart = c;
 
     while (*uart == 0) ;
 }
+
+void print_hex_num(unsigned short n)
+{
+	static const char convertBuffer[] = "0123456789abcdef";
+
+	short i = 0;
+
+	while (i < 4) {
+		unsigned short a = (n & 0xf000U) >> 12;
+		my_putc(convertBuffer[a]);
+
+		n <<= 4;
+		i++;
+	}
+}
+
+void my_printf(char* format, ...)
+{
+	va_list arg;
+	char c;
+	va_start(arg, format);
+
+
+	while (c = *format++)
+	{
+		if (c == '%')
+		{
+			c = *format++;
+
+			if (c == '%')
+				my_putc('%');
+			else if (c == 'x') {
+				int a = va_arg(arg, unsigned int);
+				print_hex_num(a);
+			}
+			else if (c == 'c')
+				my_putc(va_arg(arg, char));
+			else my_putc('?');
+		}
+		else
+			my_putc(c);
+	}
+
+	va_end(arg);
+
+}
+
+
 
 int main()
 {
@@ -51,6 +101,6 @@ int main()
 
     int c = a + b;
 
-    putc('0' + c);
+    my_printf("%x + %x===%x\n", a, b, c);
 }
 

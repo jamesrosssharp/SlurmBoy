@@ -17,7 +17,14 @@ SECTIONS {
 	} > rom
 
 
-	.data : {
+    .rodata : {
+        . = ALIGN(4);
+        *( .rodata .rodata.*)
+        . = ALIGN(4);
+    } > rom
+
+    
+	.data (NOLOAD) : {
 		. = ALIGN(4);
 		*( .data .data.* )
 	} > ram
