@@ -1,9 +1,15 @@
 /* vim: set et ts=4 sw=4: */
 
 /*
-	$PROJECT
+	 
+  --  -- -- ----- ---- ----  -- -- --
+ / / / / / / /o )/ \/ \| o )/  \|| //
+ \ \/ / / / /  (/ ^  ^ \  (  o /\\//
+ / /  --\  / /\ \/ \/ \/ o )  / / /
+ ----------------  -- --------  --
 
-$FILE: $DESC
+memory_controller.v : memory controller and top level for most of SoC, excluding
+CPU
 
 License: MIT License
 
@@ -29,7 +35,7 @@ SOFTWARE.
 
 */
 
-module memory_controller (
+module memory_controller #(parameter CLK_FREQ = 50_000_000) (
     input CLK,
     input RSTb,
 
@@ -55,7 +61,11 @@ module memory_controller (
 
 	output reg        mem_axi_rvalid,
 	input             mem_axi_rready,
-	output reg [31:0] mem_axi_rdata
+	output reg [31:0] mem_axi_rdata,
+
+    /* UART out */
+
+    output            uart_tx
 
 );
 
@@ -66,6 +76,9 @@ wire [31:0] scratchpad_data_out;
 wire rom_valid;
 
 reg  scratchpad_write_b; /* the write flag to the scratchpad */
+
+reg wr_uart;
+reg [7:0] uart_data;
 
 boot_rom rom0
 (
@@ -88,6 +101,21 @@ scratchpad_ram ram0
     scratchpad_data_out,
     scratchpad_write_b
 );
+
+uart 
+#(.CLK_FREQ(CLK_FREQ)) u0
+(
+	CLK,	
+	RSTb,
+	rd_addr[5:2],
+	wr_addr[5:2],
+    mem_axi_wdata,
+	uart_data,
+	wr_uart, 
+	uart_tx
+);
+
+
 
 
 /* Process memory reads */
@@ -135,6 +163,12 @@ begin
                                 state_r <= state_r_ready;
                             end
                         end
+                        4'd2: begin /* UART */
+                            if (rom_valid == 1'b1) begin // HACK: If ROM is valid, UART is too...
+                                mem_axi_rdata <= uart_data;
+                                state_r <= state_r_ready;
+                            end
+                        end
                         default: begin
                             mem_axi_rdata <= 32'hdeadbeef;
                             state_r <= state_r_ready;
@@ -174,10 +208,12 @@ begin
         mem_axi_wready  <= 1'b0;
         mem_axi_bvalid  <= 1'b0;
         scratchpad_write_b <= 1'b1;  
+        wr_uart <= 1'b0;
     end else begin
         mem_axi_awready <= 1'b0;
         mem_axi_wready  <= 1'b0;
         scratchpad_write_b <= 1'b1;  
+        wr_uart <= 1'b0;
         mem_axi_bvalid  <= 1'b0;
 
         case (state_w)
@@ -203,6 +239,11 @@ begin
                               mem_axi_wready <= 1'b1;
                               state_w <= state_w_assert_b_channel;
                         end
+                        4'd2: begin /* UART */
+                              wr_uart <= 1'b1;
+                              mem_axi_wready <= 1'b1;
+                              state_w <= state_w_assert_b_channel;
+                        end     
                         default: begin
                               state_w <= state_w_assert_b_channel;
                               mem_axi_wready <= 1'b1;

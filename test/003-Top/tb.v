@@ -17,19 +17,17 @@ module tb ();
 
     wire [5:0] gpi;
 
+    wire uart_tx;
+
 slurmboy_top s0 (
     CLK,
     RSTb,
 
     /* buttons */
-    gpi 
+    gpi,
 
-    /* Pins for external memory interfaces go here */
+    uart_tx 
 
-
-    /* Audio output */ 
-
-    /* Display output */
 
 );
 

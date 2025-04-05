@@ -8,7 +8,10 @@ SRC_DIR = $(PWD)/../../src
 PROJECT_SOURCES = memory_controller.v	\
 				  boot_rom.v			\
 				  scratchpad_ram.v		\
-				  slurmboy_top.v
+				  slurmboy_top.v		\
+				  uart.v				\
+				  uart_tx.v				\
+				  baudgen.v
 
 SIM_BUILD				= sim_build/rtl
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))
@@ -36,6 +39,7 @@ view:	tb.vcd config.gtkw
 rom_image.mem: rom_src/rom.bin
 	python3 $(GEN_MEM) rom_src/rom.bin rom_image.mem
 
+.PHONY: rom_src/rom.bin
 rom_src/rom.bin:	
 	make -C rom_src
 

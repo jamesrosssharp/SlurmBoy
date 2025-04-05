@@ -3,3 +3,6 @@
     
 _start:
     jal main
+
+_die:
+    j _die

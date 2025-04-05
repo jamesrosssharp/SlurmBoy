@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sat Apr  5 03:37:03 2025
+[*] Sat Apr  5 05:37:18 2025
 [*]
 [dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/tb.vcd"
-[dumpfile_mtime] "Sat Apr  5 03:27:53 2025"
-[dumpfile_size] 66954
+[dumpfile_mtime] "Sat Apr  5 05:34:25 2025"
+[dumpfile_size] 10137443
 [savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/config.gtkw"
 [timestart] 0
 [size] 1920 1054
 [pos] 1919 0
-*-20.000000 3820000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-26.000000 8700000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.s0.
 [treeopen] tb.s0.cpu0.
@@ -66,7 +66,8 @@ tb.s0.cpu0.picorv32_core.\cpuregs[11][31:0]
 tb.s0.cpu0.picorv32_core.\cpuregs[12][31:0]
 tb.s0.cpu0.picorv32_core.\cpuregs[13][31:0]
 tb.s0.cpu0.picorv32_core.\cpuregs[14][31:0]
-@23
 tb.s0.cpu0.picorv32_core.\cpuregs[15][31:0]
+@29
+tb.uart_tx
 [pattern_trace] 1
 [pattern_trace] 0

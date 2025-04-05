@@ -38,7 +38,10 @@ module slurmboy_top (
     input RSTb,
 
     /* buttons */
-    input  [5:0] gpi 
+    input  [5:0] gpi,
+
+    /* uart */
+    output uart_tx
 
     /* Pins for external memory interfaces go here */
 
@@ -195,7 +198,9 @@ memory_controller mem0 (
 
 	mem_axi_rvalid,
 	mem_axi_rready,
-	mem_axi_rdata
+	mem_axi_rdata,
+
+    uart_tx
 
 );
 

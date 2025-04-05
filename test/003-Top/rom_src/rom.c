@@ -34,11 +34,23 @@ SOFTWARE.
 
 */
 
+#define UART_REG 0x20000000
+
+void putc(char c)
+{
+    char* uart = (char*)UART_REG;
+    *uart = c;
+
+    while (*uart == 0) ;
+}
+
 int main()
 {
     int a = 3;
-    int b = 7;
+    int b = 2;
 
     int c = a + b;
+
+    putc('0' + c);
 }
 
