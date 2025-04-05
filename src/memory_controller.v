@@ -59,6 +59,8 @@ module memory_controller (
 
 );
 
+assign mem_axi_bvalid = 1'b0;
+
 reg  [31:0] rd_addr;    /* the read address */
 reg  [31:0] wr_addr;    /* the write address */
 wire [31:0] rom_data;
