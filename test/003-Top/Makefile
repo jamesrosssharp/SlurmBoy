@@ -33,13 +33,12 @@ include $(shell cocotb-config --makefiles)/Makefile.sim
 view:	tb.vcd config.gtkw 
 	gtkwave tb.vcd config.gtkw
 
-rom_image.mem: rom.bin
-	python3 $(GEN_MEM) rom.bin rom_image.mem
+rom_image.mem: rom_src/rom.bin
+	python3 $(GEN_MEM) rom_src/rom.bin rom_image.mem
 
-rom.bin:	rom.o
-	/opt/riscv32i/bin/riscv32-unknown-elf-objcopy -O binary rom.o rom.bin
-
-rom.o: 	rom.s
-	/opt/riscv32i/bin/riscv32-unknown-elf-as rom.s -o rom.o
+rom_src/rom.bin:	
+	make -C rom_src
 
 
+my_clean:
+	rm -rf rom_image.mem rom.o rom.bin

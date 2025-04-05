@@ -4,9 +4,12 @@
 module tb ();
 
     initial begin
+        integer j;
         $dumpfile("tb.vcd");
         $dumpvars(0, tb);
-        #1;
+        for (j = 0; j < 16; j = j + 1) begin
+            $dumpvars(0, s0.cpu0.picorv32_core.cpuregs[j]);
+        end
     end
 
     reg CLK;
@@ -29,6 +32,7 @@ slurmboy_top s0 (
     /* Display output */
 
 );
+
 
 
 endmodule

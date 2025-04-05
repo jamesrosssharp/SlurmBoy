@@ -32,7 +32,7 @@ async def test_project(dut):
 
     dut._log.info("Test project behavior")
 
-    await ClockCycles(dut.CLK, 100)
+    await ClockCycles(dut.CLK, 200)
 
 
 

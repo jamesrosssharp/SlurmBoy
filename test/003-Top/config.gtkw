@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Thu Apr  3 07:28:51 2025
+[*] Sat Apr  5 03:37:03 2025
 [*]
 [dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/tb.vcd"
-[dumpfile_mtime] "Thu Apr  3 07:25:46 2025"
-[dumpfile_size] 19645
+[dumpfile_mtime] "Sat Apr  5 03:27:53 2025"
+[dumpfile_size] 66954
 [savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/003-Top/config.gtkw"
 [timestart] 0
-[size] 1920 996
-[pos] -1 -1
-*-19.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1920 1054
+[pos] 1919 0
+*-20.000000 3820000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.s0.
 [treeopen] tb.s0.cpu0.
 [sst_width] 376
-[signals_width] 198
+[signals_width] 248
 [sst_expanded] 1
-[sst_vpaned_height] 290
+[sst_vpaned_height] 311
 @22
 tb.s0.mem0.mem_axi_araddr[31:0]
 @28
@@ -34,7 +34,39 @@ tb.s0.cpu0.picorv32_core.dbg_insn_opcode[31:0]
 @28
 tb.s0.cpu0.picorv32_core.dbg_mem_instr
 tb.s0.cpu0.picorv32_core.dbg_valid_insn
-@29
 tb.s0.cpu0.picorv32_core.instr_lui
+@22
+tb.s0.cpu0.picorv32_core.current_pc[31:0]
+tb.s0.cpu0.picorv32_core.cpu_state[7:0]
+tb.s0.cpu0.picorv32_core.next_pc[31:0]
+@820
+tb.s0.cpu0.picorv32_core.dbg_ascii_instr[63:0]
+@22
+tb.s0.mem0.mem_axi_awaddr[31:0]
+@28
+tb.s0.mem0.mem_axi_awvalid
+tb.s0.mem0.mem_axi_awready
+tb.s0.mem0.mem_axi_wvalid
+tb.s0.mem0.mem_axi_wready
+tb.s0.mem0.mem_axi_bvalid
+tb.s0.mem0.mem_axi_bready
+@22
+tb.s0.cpu0.picorv32_core.\cpuregs[0][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[1][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[2][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[3][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[5][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[4][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[6][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[7][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[8][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[9][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[10][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[11][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[12][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[13][31:0]
+tb.s0.cpu0.picorv32_core.\cpuregs[14][31:0]
+@23
+tb.s0.cpu0.picorv32_core.\cpuregs[15][31:0]
 [pattern_trace] 1
 [pattern_trace] 0

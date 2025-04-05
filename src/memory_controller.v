@@ -45,7 +45,7 @@ module memory_controller (
 	input  [31:0] mem_axi_wdata,
 	input  [ 3:0] mem_axi_wstrb,
 
-	output        mem_axi_bvalid,
+	output  reg   mem_axi_bvalid,
 	input         mem_axi_bready,
 
 	input         mem_axi_arvalid,
@@ -58,8 +58,6 @@ module memory_controller (
 	output reg [31:0] mem_axi_rdata
 
 );
-
-assign mem_axi_bvalid = 1'b0;
 
 reg  [31:0] rd_addr;    /* the read address */
 reg  [31:0] wr_addr;    /* the write address */
@@ -163,6 +161,7 @@ end
 localparam state_w_idle                = 4'd0;
 localparam state_w_latch_address       = 4'd1;
 localparam state_w_wait_data_valid     = 4'd2;
+localparam state_w_assert_b_channel    = 4'd3;
 localparam state_w_done                = 4'd4;
 
 reg [3:0] state_w;
@@ -172,11 +171,14 @@ begin
     if (RSTb == 1'b0) begin
         state_w           <= state_w_idle;
         mem_axi_awready <= 1'b0;
+        mem_axi_wready  <= 1'b0;
+        mem_axi_bvalid  <= 1'b0;
         scratchpad_write_b <= 1'b1;  
     end else begin
         mem_axi_awready <= 1'b0;
         mem_axi_wready  <= 1'b0;
         scratchpad_write_b <= 1'b1;  
+        mem_axi_bvalid  <= 1'b0;
 
         case (state_w)
             state_w_idle: begin
@@ -193,24 +195,28 @@ begin
                 if (mem_axi_wvalid == 1'b1) begin
                     case (wr_addr[31:28])
                         4'd0: begin /* ROM */
-                              state_w <= state_w_done;
+                              state_w <= state_w_assert_b_channel;
                               mem_axi_wready <= 1'b1;
                         end
                         4'd1: begin /* Scratch pad RAM */
                               scratchpad_write_b <= 1'b0;  
                               mem_axi_wready <= 1'b1;
-                              state_w <= state_w_done;
+                              state_w <= state_w_assert_b_channel;
                         end
                         default: begin
-                              state_w <= state_w_done;
+                              state_w <= state_w_assert_b_channel;
                               mem_axi_wready <= 1'b1;
                         end    
                     endcase
                 end
             end
+            state_w_assert_b_channel: begin
+                mem_axi_bvalid <= 1'b1;
+                if (mem_axi_bready == 1'b1)
+                    state_w <= state_w_done;
+            end
             state_w_done: begin
-                if (mem_axi_wvalid == 1'b0)
-                    state_w <= state_w_idle;
+                state_w <= state_w_idle;
             end
         endcase
     end
