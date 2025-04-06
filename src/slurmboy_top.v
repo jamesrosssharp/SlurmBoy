@@ -33,7 +33,7 @@ SOFTWARE.
 
 */
 
-module slurmboy_top (
+module slurmboy_top #(parameter CLK_FREQ = 50_000_000) (
     input CLK,
     input RSTb,
 
@@ -172,7 +172,7 @@ cpu0
 
 );
 
-memory_controller mem0 (
+memory_controller #(.CLK_FREQ(CLK_FREQ)) mem0 (
     CLK,
     RSTb,
 
