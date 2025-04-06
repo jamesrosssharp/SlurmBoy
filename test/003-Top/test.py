@@ -12,12 +12,18 @@ sys.path.insert(0,'../')
 
 from common.AXIDevice import AXIDevice
 
+uart_text = ""
+
+
 async def poll_uart(clk, dut):
+    global uart_text
     prev_val = 0
     while True:
         await RisingEdge(clk)
         if prev_val != dut.UART_VALID.value and dut.UART_VALID.value:
-            print("{:c}".format(dut.UART_BYTE.value & 0xff), end="")
+            my_str = "{:c}".format(dut.UART_BYTE.value & 0xff) 
+            print(my_str, end="")
+            uart_text += my_str 
         prev_val = dut.UART_VALID.value
 
 
@@ -42,9 +48,17 @@ async def test_project(dut):
 
     dut._log.info("Test project behavior")
 
-    await ClockCycles(dut.CLK, 200000)
+    await ClockCycles(dut.CLK, 1000000)
 
-
-
-
-
+    assert uart_text == """Sieve of Eratosthenes\r
+=====================\r
+0002 is prime\r
+0003 is prime\r
+0005 is prime\r
+0007 is prime\r
+000b is prime\r
+000d is prime\r
+0011 is prime\r
+0013 is prime\r
+done!\r
+"""

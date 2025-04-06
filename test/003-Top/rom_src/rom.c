@@ -96,11 +96,29 @@ void my_printf(char* format, ...)
 
 int main()
 {
-    int a = 3;
-    int b = 2;
+	#define MAX_PRIME 20
+	int array[MAX_PRIME];
+	int i;
+	int j;
 
-    int c = a + b;
+	my_printf("Sieve of Eratosthenes\r\n");
+	my_printf("=====================\r\n");
 
-    my_printf("%x + %x===%x\n", a, b, c);
+	for (i = 0; i < MAX_PRIME; i++)
+		array[i] = 1;
+
+	for (i = 2; i < MAX_PRIME / 2; i++)
+	{
+		if (array[i])
+			for (j = i + i; j < MAX_PRIME; j += i)
+				array[j] = 0;
+	}
+
+	for (i = 2; i < MAX_PRIME; i++)
+		if (array[i])
+			my_printf("%x is prime\r\n", i);
+
+	my_printf("done!\r\n");
+
 }
 
