@@ -7,8 +7,10 @@
  / /  --\  / /\ \/ \/ \/ o )  / / /
  ----------------  -- --------  --
 
-scratchpad_ram.v: temporary "tightly coupled" memory block (until we
-figure out how the cache should work)
+ram_64x16k: 64 bit x 16k single port RAM block
+
+This is a place holder for simulation, in iCE40
+implementation we 
 
 License: MIT License
 
@@ -34,14 +36,13 @@ SOFTWARE.
 
 */
 
-module scratchpad_ram
-#(parameter BITS = 32, parameter ADDRESS_BITS = 10) 
+module ram_64x16k
+#(parameter BITS = 64, parameter ADDRESS_BITS = 14) 
 (
     input CLK,
     input RSTb,
 
-    input  [ADDRESS_BITS - 1:0] rd_addr,
-    input  [ADDRESS_BITS - 1:0] wr_addr,
+    input  [ADDRESS_BITS - 1:0] addr,
     input  [BITS - 1:0]         data_in,
     output reg [BITS - 1:0]     data_out,
     input                       WRb,
@@ -55,16 +56,18 @@ begin
     if (WRb == 1'b0)
     begin
         if (wstrb[0])    
-            MEM[wr_addr][7:0] <= data_in[7:0];
+            MEM[addr][7:0] <= data_in[7:0];
         if (wstrb[1])    
-            MEM[wr_addr][15:8] <= data_in[15:8];
+            MEM[addr][15:8] <= data_in[15:8];
         if (wstrb[2])    
-            MEM[wr_addr][23:16] <= data_in[23:16];
+            MEM[addr][23:16] <= data_in[23:16];
         if (wstrb[3])    
-            MEM[wr_addr][31:24] <= data_in[31:24];
+            MEM[addr][31:24] <= data_in[31:24];
     end
-    data_out <= MEM[rd_addr];
+    data_out <= MEM[addr];
 
 end
+
+
 
 endmodule
