@@ -1,0 +1,36 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Apr 20 05:14:31 2025
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/004-Cache/tb.vcd"
+[dumpfile_mtime] "Sun Apr 20 05:12:20 2025"
+[dumpfile_size] 2706
+[savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/004-Cache/config.gtkw"
+[timestart] 0
+[size] 3840 2134
+[pos] 1919 0
+*-16.000000 200000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.uut.
+[sst_width] 223
+[signals_width] 174
+[sst_expanded] 1
+[sst_vpaned_height] 741
+@28
+tb.uut.ram0.CLK
+tb.RSTb
+@22
+tb.uut.ram0.addr[13:0]
+tb.uut.ram0.data_in[63:0]
+tb.cpu_addr[27:0]
+tb.cpu_data_in[31:0]
+tb.cpu_data_out[31:0]
+@28
+tb.cpu_rd_ready
+tb.cpu_rd_valid
+@22
+tb.uut.state[3:0]
+@28
+tb.uut.cache_hit
+[pattern_trace] 1
+[pattern_trace] 0

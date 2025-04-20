@@ -69,5 +69,12 @@ begin
 end
 
 
+integer i;
+
+initial begin
+    for (i = 0; i < (1 << ADDRESS_BITS); i = i + 1) begin
+        MEM[i] = {BITS{1'b0}};
+    end
+end
 
 endmodule
