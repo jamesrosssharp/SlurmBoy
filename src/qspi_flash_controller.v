@@ -51,165 +51,90 @@ module flash_controller (
     /* data direction */
     output reg [3:0] qspi_io_dir,
 
-    /* AXI4 Lite device memory interface (to arbiter / cache) */
+    /* Register interface */
 
-    /* -- Disable write lane -- 
-    input         mem_axi_awvalid,
-	output        mem_axi_awready,
-	input  [31:0] mem_axi_awaddr,
-	input  [ 2:0] mem_axi_awprot,
+    input   [1:0] reg_addr,
+    output reg [31:0] reg_data_out,
+    input  [31:0] reg_data_in,
 
-	input         mem_axi_wvalid,
-	output        mem_axi_wready,
-	input  [31:0] mem_axi_wdata,
-	input  [ 3:0] mem_axi_wstrb,
+    input  reg_WR_valid,
+    output reg reg_WR_ready,
 
-	output        mem_axi_bvalid,
-	input         mem_axi_bready,
-    */
+    input  reg_RD_ready,
+    output reg reg_RD_valid,
 
-	input         mem_axi_arvalid,
-	output        mem_axi_arready,
-	input  [31:0] mem_axi_araddr,
-	input  [ 2:0] mem_axi_arprot,
+    /* memory mapped interface */
 
-	input         mem_axi_rvalid,
-	output        mem_axi_rready,
-	output  [31:0] mem_axi_rdata,
+    input  [23:0] mem_addr,
+    output [31:0] mem_data_out,
+    input  [31:0] mem_data_in,
 
-    /* AXI4 Lite peripheral interface (for device registers) */
-
-    input         reg_axi_awvalid,
-	output  reg   reg_axi_awready,
-	input  [31:0] reg_axi_awaddr,
-	input  [ 2:0] reg_axi_awprot,
-
-	input         reg_axi_wvalid,
-	output reg    reg_axi_wready,
-	input  [31:0] reg_axi_wdata,
-	input  [ 3:0] reg_axi_wstrb,
-
-	output reg    reg_axi_bvalid,
-	input         reg_axi_bready,
-
-	input         reg_axi_arvalid,
-	output reg    reg_axi_arready,
-	input  [31:0] reg_axi_araddr,
-	input  [ 2:0] reg_axi_arprot,
-
-	input         reg_axi_rvalid,
-	output reg    reg_axi_rready,
-	output reg [31:0] reg_axi_rdata
+    input  mem_RD_ready,
+    output reg mem_RD_valid
 
 );
 
-reg [1:0]  reg_sel;
-reg [1:0]  rd_reg_sel;
-reg [31:0] cmd;
-reg [31:0] data;
+reg [31:0] cmd_reg;
+reg [31:0] data_wr_reg;
+reg [31:0] data_rd_reg;
 
-/* AXI Reg writes */
 
-task reg_write;
-    input [1:0] reg_addr;
-    begin
-        if (reg_axi_wvalid && reg_axi_wready) begin
+/* Register reads */
+always @(posedge CLK)
+begin
+    if (RSTb == 1'b0) begin
+        reg_RD_valid <= 1'b0;
+    end else begin
+        reg_RD_valid <= 1'b0;
+    
+        if (reg_RD_ready == 1'b1 && reg_RD_valid == 1'b0) begin
             case (reg_addr)
-                2'b00:  /* write command register */
-                    cmd <= reg_axi_wdata;   
-                2'b01:  /* write data register */
-                    data <= reg_axi_wdata;
-                default:;    
+                2'b00:  begin /* command reg */
+                    reg_data_out <= cmd_reg;
+                    reg_RD_valid <= 1'b1;
+                end
+                2'b01:  begin /* data wr reg */
+                    reg_data_out <= data_wr_reg;
+                    reg_RD_valid <= 1'b1;
+                end
+                2'b10: begin /* data rd reg */
+                    reg_data_out <= data_rd_reg;
+                    reg_RD_valid <= 1'b1;
+                end
+                default:
+                    reg_RD_valid <= 1'b1;
             endcase    
-            reg_axi_wready <= 1'b0; /* Assert ready on next cycle */
-        end
-    end        
-endtask
-
-
-always @(posedge CLK)
-begin
-    if (RSTb == 1'b0) begin
-        reg_axi_awready <= 1'b0;
-        reg_axi_wready <= 1'b0;
-
-    end else begin
-        reg_axi_awready <= 1'b0;
-        reg_axi_wready <= 1'b0;
-
-        if (reg_axi_awvalid == 1'b1) begin  /* If we have a write to register address */
-            
-            if (reg_axi_wvalid == 1'b1) begin /* And if we have a simultaneous write request */
-                reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
-            
-                reg_write(reg_axi_awaddr[1:0]);    
-            end
-
-            if (reg_axi_awvalid && reg_axi_awready)
-                reg_sel <= reg_axi_awaddr[1:0]; /* Store address */
-            else
-                reg_axi_awready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
-
-        end else begin  /* No address write - but do we have a data write? */
-
-           if (reg_axi_wvalid == 1'b1) begin /* we have a write request */
-                reg_axi_wready <= 1'b1; /* Assert ready on next cycle */
-                
-                reg_write(reg_sel);    
-           end
-        end
-
+        end    
     end    
 end
 
-/* AXI Reg reads */
-
-task reg_read;
-    input [1:0] reg_addr;
-    begin
-        case (reg_addr)
-            2'b00:  /* read command register */
-                reg_axi_rdata <= cmd;   
-            2'b01:  /* read data register */
-                reg_axi_rdata <= data;
-            default:;    
-        endcase    
-        reg_axi_rready <= 1'b1; /* Assert ready on next cycle */
-    end        
-endtask
-
-
+/* Register writes */
 always @(posedge CLK)
 begin
     if (RSTb == 1'b0) begin
-        reg_axi_arready <= 1'b0;
-        reg_axi_rready <= 1'b0;
-        reg_axi_rdata <= 32'h00000000;
-
+        cmd_reg <= 32'd0;
+        data_wr_reg <= 32'd0;
+        reg_WR_ready <= 1'b0;
     end else begin
-        reg_axi_arready <= 1'b0;
-        reg_axi_rready <= 1'b0;
-
-        if (reg_axi_arvalid == 1'b1) begin  /* If we have a read from register address */
-            
-            if (reg_axi_rvalid == 1'b1 && reg_axi_rready == 1'b0) begin /* And if we have a simultaneous read request */
-                reg_read(reg_axi_araddr[1:0]);    
-            end
-
-            if (reg_axi_arvalid && reg_axi_arready)
-                rd_reg_sel <= reg_axi_araddr[1:0]; /* Store address */
-            else
-                reg_axi_arready <= 1'b1;    /* Assert ready on next cycle - create a "beat" */
-
-        end else begin  /* No address write - but do we have a data write? */
-
-           if (reg_axi_rvalid == 1'b1 && reg_axi_rready == 1'b0) begin /* we have a read request */
-                reg_read(rd_reg_sel);    
-           end
-        end
-
+        reg_WR_ready <= 1'b0;
+    
+        if (reg_WR_valid == 1'b1 && reg_WR_ready == 1'b0) begin
+            case (reg_addr)
+                2'b00:  begin /* command reg */
+                    cmd_reg <= reg_data_in;
+                    reg_WR_ready <= 1'b1;
+                end
+                2'b01:  begin /* data wr reg */
+                    data_wr_reg <= reg_data_in;
+                    reg_WR_ready <= 1'b1;
+                end
+                default:
+                    reg_WR_ready <= 1'b1;
+            endcase    
+        end    
     end    
 end
+
 
 
 

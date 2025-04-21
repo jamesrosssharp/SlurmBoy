@@ -10,9 +10,7 @@ import numpy as np
 import sys
 sys.path.insert(0,'../')
 
-from common.AXIDevice import AXIDevice
-
-
+from common.SimpleRegDevice import SimpleRegDevice
 
 @cocotb.test()
 async def test_project(dut):
@@ -26,6 +24,17 @@ async def test_project(dut):
     clock = Clock(dut.CLK, 20, units="ns")
     cocotb.start_soon(clock.start())
 
+    dev = SimpleRegDevice(
+        dut.CLK,
+        dut.reg_addr,
+        dut.reg_data_in,
+        dut.reg_data_out,
+        dut.reg_RD_ready,
+        dut.reg_RD_valid,
+        dut.reg_WR_valid,
+        dut.reg_WR_ready
+    )
+
     # Reset
     dut._log.info("Reset")
     dut.RSTb.value = 0
@@ -34,26 +43,15 @@ async def test_project(dut):
 
     dut._log.info("Test project behavior")
 
-    slv = AXIDevice(dut.CLK, dut.reg_axi_awvalid, dut.reg_axi_awready, dut.reg_axi_awaddr, dut.reg_axi_wvalid, dut.reg_axi_wready, dut.reg_axi_wdata, dut.reg_axi_wstrb,
-                             dut.reg_axi_arvalid, dut.reg_axi_arready, dut.reg_axi_araddr, dut.reg_axi_rvalid, dut.reg_axi_rready, dut.reg_axi_rdata)
+    # Example write
 
-    await slv.write(0, 0x12345678, 0xf)
-    assert dut.f0.cmd == 0x12345678
+    val = 0xCAFEBABE
+    await dev.write(address=0x01, data=val)
 
-    await ClockCycles(dut.CLK, 10)
+    # Example read
+    result = await dev.read(address=0x01)
+    dut._log.info(f"Read data: 0x{int(result):08X}")
 
-    await slv.write(0, 0x87654321, 0xf)
-    assert dut.f0.cmd == 0x87654321
+    assert result == val
 
-    await ClockCycles(dut.CLK, 10)
-
-    await slv.staggered_write(0x1, 0x11223344, 0xf)
-    assert dut.f0.data == 0x11223344
-
-    await ClockCycles(dut.CLK, 10)
-
-    dat = await slv.read(0x1)
-
-    assert dat == 0x11223344
-    
     await ClockCycles(dut.CLK, 10)

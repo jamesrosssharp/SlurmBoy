@@ -1,40 +1,29 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Wed Mar 19 08:34:41 2025
+[*] Mon Apr 21 06:37:41 2025
 [*]
 [dumpfile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/001-Flash-Controller/tb.vcd"
-[dumpfile_mtime] "Wed Mar 19 08:34:24 2025"
-[dumpfile_size] 5291
+[dumpfile_mtime] "Mon Apr 21 06:36:48 2025"
+[dumpfile_size] 3002
 [savefile] "/home/jrsharp/home_mnt/code/SlurmBoy/test/001-Flash-Controller/config.gtkw"
 [timestart] 0
-[size] 1920 1054
+[size] 3840 2134
 [pos] 1919 0
 *-18.000000 1060000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
-[treeopen] tb.f0.
 [sst_width] 223
 [signals_width] 190
 [sst_expanded] 1
 [sst_vpaned_height] 310
 @22
-tb.f0.cmd[31:0]
-tb.f0.data[31:0]
+tb.dut.cmd_reg[31:0]
+tb.dut.data_rd_reg[31:0]
+tb.dut.data_wr_reg[31:0]
 @28
-tb.f0.CLK
-tb.f0.RSTb
-tb.f0.reg_axi_wready
-tb.f0.reg_axi_wvalid
-@22
-tb.f0.reg_axi_awaddr[31:0]
-@28
-tb.f0.reg_axi_awvalid
-tb.f0.reg_axi_awready
-@22
-tb.f0.reg_axi_rdata[31:0]
-@28
-tb.f0.reg_sel[1:0]
-tb.reg_axi_rready
+tb.dut.reg_RD_ready
+tb.dut.reg_RD_valid
+tb.dut.reg_WR_ready
 @29
-tb.reg_axi_rvalid
+tb.dut.reg_WR_valid
 [pattern_trace] 1
 [pattern_trace] 0

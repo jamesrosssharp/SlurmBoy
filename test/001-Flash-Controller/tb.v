@@ -9,12 +9,14 @@ module tb ();
         #1;
     end
 
+    // Clock and reset
     reg CLK;
     reg RSTb;
 
+    // QSPI Interface
     wire [1:0] qspi_sclk_ddr;
-    wire qspi_CSb;
-   
+    wire       qspi_CSb;
+
     reg  [1:0] qspi_d0_ddr_in;
     reg  [1:0] qspi_d1_ddr_in;
     reg  [1:0] qspi_d2_ddr_in;
@@ -27,88 +29,61 @@ module tb ();
 
     wire [3:0] qspi_io_dir;
 
-	reg         mem_axi_arvalid;
-	wire        mem_axi_arready;
-	reg  [31:0] mem_axi_araddr;
-	reg  [ 2:0] mem_axi_arprot;
+    // Register interface
+    reg  [1:0]  reg_addr;
+    wire [31:0] reg_data_out;
+    reg  [31:0] reg_data_in;
 
-	wire        mem_axi_rvalid;
-	reg         mem_axi_rready;
-	reg  [31:0] mem_axi_rdata;
+    reg  reg_WR_valid;
+    wire reg_WR_ready;
 
-    reg         reg_axi_awvalid;
-	wire        reg_axi_awready;
-	reg  [31:0] reg_axi_awaddr;
-	reg  [ 2:0] reg_axi_awprot;
+    reg  reg_RD_ready;
+    wire reg_RD_valid;
 
-	reg         reg_axi_wvalid;
-	wire        reg_axi_wready;
-	reg  [31:0] reg_axi_wdata;
-	reg  [ 3:0] reg_axi_wstrb;
+    // Memory mapped interface
+    reg  [23:0] mem_addr;
+    wire [31:0] mem_data_out;
+    reg  [31:0] mem_data_in;
 
-	wire        reg_axi_bvalid;
-	reg         reg_axi_bready;
+    reg  mem_RD_ready;
+    wire mem_RD_valid;
 
-	reg         reg_axi_arvalid;
-	wire        reg_axi_arready;
-	reg  [31:0] reg_axi_araddr;
-	reg  [ 2:0] reg_axi_arprot;
+    // Instantiate the DUT
+    flash_controller dut (
+        .CLK(CLK),
+        .RSTb(RSTb),
 
-	reg        reg_axi_rvalid;
-	wire         reg_axi_rready;
-	wire  [31:0] reg_axi_rdata;
+        .qspi_sclk_ddr(qspi_sclk_ddr),
+        .qspi_CSb(qspi_CSb),
 
+        .qspi_d0_ddr_in(qspi_d0_ddr_in),
+        .qspi_d1_ddr_in(qspi_d1_ddr_in),
+        .qspi_d2_ddr_in(qspi_d2_ddr_in),
+        .qspi_d3_ddr_in(qspi_d3_ddr_in),
 
-	flash_controller f0 (
-        CLK,
-        RSTb,
+        .qspi_d0_ddr_out(qspi_d0_ddr_out),
+        .qspi_d1_ddr_out(qspi_d1_ddr_out),
+        .qspi_d2_ddr_out(qspi_d2_ddr_out),
+        .qspi_d3_ddr_out(qspi_d3_ddr_out),
 
-        qspi_sclk_ddr,
-        qspi_CSb,
-       
-        qspi_d0_ddr_in,
-        qspi_d1_ddr_in,
-        qspi_d2_ddr_in,
-        qspi_d3_ddr_in,
+        .qspi_io_dir(qspi_io_dir),
 
-        qspi_d0_ddr_out,
-        qspi_d1_ddr_out,
-        qspi_d2_ddr_out,
-        qspi_d3_ddr_out,
+        .reg_addr(reg_addr),
+        .reg_data_out(reg_data_out),
+        .reg_data_in(reg_data_in),
 
-        qspi_io_dir,
+        .reg_WR_valid(reg_WR_valid),
+        .reg_WR_ready(reg_WR_ready),
 
-        mem_axi_arvalid,
-        mem_axi_arready,
-        mem_axi_araddr,
-        mem_axi_arprot,
+        .reg_RD_ready(reg_RD_ready),
+        .reg_RD_valid(reg_RD_valid),
 
-        mem_axi_rvalid,
-        mem_axi_rready,
-        mem_axi_rdata,
+        .mem_addr(mem_addr),
+        .mem_data_out(mem_data_out),
+        .mem_data_in(mem_data_in),
 
-        reg_axi_awvalid,
-        reg_axi_awready,
-        reg_axi_awaddr,
-        reg_axi_awprot,
-
-        reg_axi_wvalid,
-        reg_axi_wready,
-        reg_axi_wdata,
-        reg_axi_wstrb,
-
-        reg_axi_bvalid,
-        reg_axi_bready,
-
-        reg_axi_arvalid,
-        reg_axi_arready,
-        reg_axi_araddr,
-        reg_axi_arprot,
-
-        reg_axi_rvalid,
-        reg_axi_rready,
-        reg_axi_rdata
-
+        .mem_RD_ready(mem_RD_ready),
+        .mem_RD_valid(mem_RD_valid)
     );
 
 endmodule
